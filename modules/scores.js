@@ -4,29 +4,15 @@ import display from './ui.js';
 export default class score {
   static scores = [];
 
-  static high = 0;
-
   static addScore(score, name) {
-    let lower = 0;
     if (!localStorage.getItem('scores')) {
       localStorage.setItem('scores', JSON.stringify(this.scores));
     }
     const play = new Player(score, name);
+    const lower = this.find_lower(score, 0);
 
-    this.scores.forEach((actual) => {
-      if (parseInt(score, 10) > parseInt(actual.score, 10)
-      && parseInt(lower, 10) <= parseInt(actual.score, 10)) {
-        lower = actual.score;
-      }
-    });
-    let indexh = -1;
+    // Find lower number index
     let indexl = -1;
-    for (let i = 0; i < this.scores.length; i += 1) {
-      if (parseInt(this.scores[i].score, 10) === parseInt(this.high, 10)) {
-        indexh = i;
-        break;
-      }
-    }
 
     for (let i = 0; i < this.scores.length; i += 1) {
       if (parseInt(this.scores[i].score, 10) === parseInt(lower, 10)) {
@@ -35,12 +21,7 @@ export default class score {
       }
     }
 
-    if (parseInt(score, 10) > parseInt(this.high, 10)) {
-      this.scores.splice(indexh + 1, 0, play);
-      this.high = parseInt(score, 10);
-    } else {
-      this.scores.splice(indexl + 1, 0, play);
-    }
+    this.scores.splice(indexl + 1, 0, play);
 
     if (this.scores.length > 1) {
       display.display(parseInt(score, 10), name, parseInt(lower, 10));
@@ -70,6 +51,16 @@ export default class score {
       this.scores = data.map((value) => new Player(value.score, value.name));
     }
     this.init();
+  }
+
+  static find_lower(score, lower){
+    this.scores.forEach((actual) => {
+      if (parseInt(score, 10) > parseInt(actual.score, 10)
+      && parseInt(lower, 10) <= parseInt(actual.score, 10)) {
+        lower = actual.score;
+      }
+    });
+    return lower;
   }
 
   static storage() {
