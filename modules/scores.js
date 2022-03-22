@@ -53,6 +53,7 @@ export default class score {
   static refresh() {
     this.scores.length = 0;
     this.scores = [];
+    console.log(this.scores)
     this.storage();
     display.remove();
   }
